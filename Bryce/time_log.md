@@ -2,4 +2,4 @@
 
 | Date | Time | Activity |
 ---|---|---
-23 Mar 2023 | 0:30 | Met with group and set up Git repository
+23 Mar 2023 | 1:00 | Met with group and set up Git repository
