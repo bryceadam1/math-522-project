@@ -4,9 +4,11 @@ Damian Anderson, Whitney Anderson, Erika Ibarra, Bryce Lunceford, Paul Smith, an
 ## Project Description
 
 Suppose that we generate data according to some process:
+
 $$
     y_i = f(x_i) + \varepsilon_i
 $$
+
 where $f$ is a deterministic function and $\varepsilon_i$ is a random error term. We will do the following:
 
 1. Train a neural network with parameters $\theta$ to predict $y_i$ from $x_i$. Call it $\hat{f}_\theta(x_i)$.
