@@ -1,19 +1,23 @@
 import numpy as np
 class random_features:
-    def __init__(self):
-        pass
-
-    def generate_features(self, feature_funcs, coeff_stds, error, num_features):
-        self.num_features = num_features
-        self.feature_funcs = feature_funcs
-        self.coeff = np.random.normal(0, coeff_stds, (num_features, len(feature_funcs)))
-        self.error = error
+    def __init__(self, func, num_params, num_features):
+        """func: should have several inputs
+        @param
+        func should take in several inputs.
+        The first should be y,
+        the second should be a random normally distributed number, this should reflect noise.
+        The rest of the numbers are randomly generated.
+        Each feature will have a different set of random numbers reflecting what the feature is measuring."""
+        self.func = func
+        self.params = np.random.normal(0, 1, (num_features, num_params))
 
     def get_xs(self, ys):
-        xs = []
+        all_outputs = []
         for y in ys:
-            func_vals = [f(y) for f in self.feature_funcs]
-            xs.append(self.coeff @ func_vals)
-        return np.array(xs)
+            y_outputs = []
+            for feature_params in self.params:
+                y_outputs.append(self.func(y, np.random.normal(0, 1), *feature_params))
+            all_outputs.append(y_outputs)
+        return np.array(all_outputs)
 
     
