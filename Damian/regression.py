@@ -36,7 +36,7 @@ testing_ys = torch.tensor(testing_ys, dtype = torch.float32)
 baseline = nn.MSELoss()(torch.ones_like(testing_ys) * torch.mean(training_ys), testing_ys).item()
 
 numbers_of_layers = [1, 2, 3, 4, 5]
-relu_on = True
+relu_on = False
 
 for num_layers in numbers_of_layers:
     training_losses = []
@@ -48,8 +48,14 @@ for num_layers in numbers_of_layers:
         else:
             steps = [nn.Linear(features_used, 100)]
             for _ in range(num_layers - 2):
-                steps = steps + [nn.ReLU(), nn.Linear(100, 100)]
-            steps = steps + [nn.ReLU(), nn.Linear(100, 1)]
+                if relu_on:
+                    steps = steps + [nn.ReLU(), nn.Linear(100, 100)]
+                else:
+                    steps = steps + [nn.Linear(100, 100)]
+            if relu_on:
+                steps = steps + [nn.ReLU(), nn.Linear(100, 1)]
+            else:
+                steps = steps + [nn.Linear(100, 1)]
             model = nn.Sequential(*steps)
 
         used_training_xs = training_xs[:,:features_used]
@@ -75,7 +81,10 @@ ax.loglog(num_features_tested, np.ones_like(num_features_tested) * baseline, lab
 plt.legend()
 plt.xlabel("Number of Features")
 plt.ylabel("MSE")
-plt.title("Error on Generated Data")
+if relu_on:
+    plt.title("Error on Generated Data")
+else:
+    plt.title("Error on Generated Data without ReLU")
 plt.show()
 
 
