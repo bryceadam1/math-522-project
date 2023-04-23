@@ -1,10 +1,16 @@
-import RandomFeatures as rf
 import numpy as np
+from matplotlib import pyplot as plt
+import RandomFeatures as rf
+
+#For some reason, I get errors when I try to import torch before using plt.figure()
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from matplotlib import pyplot as plt
 
 num_features = 2**12 + 1
 num_train = 50
@@ -12,6 +18,9 @@ num_test = 100
 
 num_features_tested = [2**k for k in range(1, 13)]
 randomness = 20
+
+regularization_amount = lambda features_used: 0
+
 func = lambda y, random, a, b: a + b * y + random * randomness
 param_generator = rf.random_features(func, 2, num_features)
 
@@ -32,15 +41,13 @@ baseline = nn.MSELoss()(torch.ones_like(testing_ys) * torch.mean(training_ys), t
 
 
 for features_used in num_features_tested:
-    model = nn.Linear(features_used, 1)
+    model = nn.Sequential(nn.Linear(features_used, 100), nn.ReLU(), nn.Linear(100, 1))
 
     used_training_xs = training_xs[:,:features_used]
     used_testing_xs = testing_xs[:,:features_used]
 
     for _ in range(10000):
-        #opt = optim.Adam(model.parameters(), lr = 1e-3 / features_used)
         opt = optim.Adam(model.parameters(), lr = 1e-3 / features_used)
-        #opt = optim.SGD(model.parameters(), lr = 1e-4)
         loss = nn.MSELoss()(torch.flatten(model(used_training_xs)), training_ys)
         loss.backward()
         opt.step()
@@ -48,12 +55,12 @@ for features_used in num_features_tested:
     training_losses.append(loss.item())
     testing_losses.append(nn.MSELoss()(torch.flatten(model(used_testing_xs)), testing_ys).item())
 
-    print(features_used)
-    print("Training loss", training_losses[-1])
-    print("Testing loss", testing_losses[-1])
+    print("features used: {}".format(features_used))
+    print("Regularization ammount: {}".format(regularization_amount(features_used)))
+    print("Training loss: {}".format(training_losses[-1]))
+    print("Testing loss: {}".format(testing_losses[-1]))
+    print()
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
 ax.loglog(num_features_tested, training_losses)
 ax.loglog(num_features_tested, testing_losses)
 ax.loglog(num_features_tested, np.ones_like(num_features_tested) * baseline)

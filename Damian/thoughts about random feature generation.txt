@@ -1,0 +1,14 @@
+Random Feature generation
+
+I look at classifiers that depend on several features.
+
+I assume each feature's mean is a function of the output, plus some random noise.
+
+I assume that what these functions look like follow some sort of random distribution.
+
+We hope that this will lead to insights as to what kind of situations makes things work well.
+
+
+
+I am using this on made up data where all the features are about equally useful.
+Increasing the number of parameters does not tend to lead to improvements when there is a one layer linear regression, and all the features are equally important.
