@@ -13,11 +13,11 @@ import torch.nn as nn
 import torch.optim as optim
 
 
-num_features = 2**4 + 1#2**12 + 1
+num_features = 2**12 + 1
 num_train = 50
 num_test = 100
 
-num_features_tested = [2**k for k in range(1, 5)]   #[2**k for k in range(1, 13)]
+num_features_tested = [2**k for k in range(9, 10)]   #[2**k for k in range(1, 13)]
 randomness = 20
 
 func = lambda y, random, a, b: a + b * y + random * randomness
@@ -36,13 +36,24 @@ testing_ys = torch.tensor(testing_ys_array, dtype = torch.float32)
 
 baseline = nn.MSELoss()(torch.ones_like(testing_ys) * torch.mean(training_ys), testing_ys).item()
 
-numbers_of_layers = [1,2,3]#[1, 2, 3, 4, 5]
+numbers_of_layers = [1, 2, 3, 4, 5]#[1, 2, 3, 4, 5]
 relu_on = False
 
 compare_bayesian = True
 
 
-model_params = []
+features_learned = dict()
+def combine_linear_layers(model):
+    if type(model) is nn.Linear:
+        return model.weight.detach().numpy().flatten()
+    result = None
+    for layer in model:
+        M = layer.weight.detach().numpy().T
+        if result is None:
+            result = M
+        else:
+            result = result @ M
+    return result.flatten()
 
 if compare_bayesian:
     training_losses = []
@@ -157,6 +168,9 @@ for num_layers in numbers_of_layers:
         training_losses.append(loss.item())
         testing_losses.append(nn.MSELoss()(torch.flatten(model(used_testing_xs)), testing_ys).item())
 
+        if relu_on is False or num_layers == 1:
+            features_learned[num_layers,features_used] = combine_linear_layers(model)
+
         print("features used: {}".format(features_used))
         print("Training loss: {}".format(training_losses[-1]))
         print("Testing loss: {}".format(testing_losses[-1]))
@@ -173,3 +187,12 @@ if relu_on:
 else:
     plt.title("Error on Generated Data without ReLU")
 plt.show()
+
+
+for num_layers, num_params in features_learned.keys():
+    model_params = features_learned[num_layers, num_params]
+    plt.title("{} layers {} parameters".format(num_layers, num_params))
+    plt.scatter(model_params, param_generator.params[:num_params, 1])
+    plt.xlabel("param beta")
+    plt.ylabel("param weight")
+    plt.show()
