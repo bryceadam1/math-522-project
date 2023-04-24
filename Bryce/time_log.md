@@ -6,3 +6,4 @@
 23 Mar 2023 | 1:00 | Met with group and set up Git repository
 29 Mar 2023 | 1:00 | Did data generation and started on a NN
 11 Apr 2023 | 2:30 | Worked with Sebastian to finish NN. Initial experiments with NN.
+24 Apr 2023 | 2:30 | Trained various NNs of different sizes.
