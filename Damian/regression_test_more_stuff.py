@@ -13,11 +13,11 @@ import torch.nn as nn
 import torch.optim as optim
 
 
-num_features = 2**12 + 1
+num_features = 2**4 + 1#2**12 + 1
 num_train = 50
 num_test = 100
 
-num_features_tested = [2**k for k in range(1, 13)]
+num_features_tested = [2**k for k in range(1, 5)]   #[2**k for k in range(1, 13)]
 randomness = 20
 
 func = lambda y, random, a, b: a + b * y + random * randomness
@@ -36,10 +36,13 @@ testing_ys = torch.tensor(testing_ys_array, dtype = torch.float32)
 
 baseline = nn.MSELoss()(torch.ones_like(testing_ys) * torch.mean(training_ys), testing_ys).item()
 
-numbers_of_layers = [1, 2, 3, 4, 5]
-relu_on = True
+numbers_of_layers = [1,2,3]#[1, 2, 3, 4, 5]
+relu_on = False
 
 compare_bayesian = True
+
+
+model_params = []
 
 if compare_bayesian:
     training_losses = []
@@ -161,7 +164,7 @@ for num_layers in numbers_of_layers:
 
     ax.loglog(num_features_tested, training_losses, '-x', label = "{} layers training".format(num_layers))
     ax.loglog(num_features_tested, testing_losses, '-o', label = "{} layers testing".format(num_layers))
-ax.loglog(num_features_tested, np.ones_like(num_features_tested) * baseline, "-.", label = 'baseline')
+ax.loglog(num_features_tested, np.ones_like(num_features_tested) * baseline, '-.', label = 'baseline')
 plt.legend()
 plt.xlabel("Number of Features")
 plt.ylabel("MSE")
