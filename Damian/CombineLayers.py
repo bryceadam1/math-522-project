@@ -8,6 +8,8 @@ import torch.optim as optim
 
 
 def combine_linear_layers(model):
+    if type(model) is nn.Linear:
+        return model.weight.detach().numpy().T
     result = None
     for layer in model:
         print(layer)

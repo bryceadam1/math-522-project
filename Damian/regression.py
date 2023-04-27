@@ -39,7 +39,7 @@ baseline = nn.MSELoss()(torch.ones_like(testing_ys) * torch.mean(training_ys), t
 numbers_of_layers = [1, 2, 3, 4, 5]
 relu_on = True
 
-compare_bayesian = True
+compare_bayesian = False
 
 if compare_bayesian:
     training_losses = []
