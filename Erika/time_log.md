@@ -6,4 +6,4 @@
 25 Apr 2023 | 5:00 | Wroked with Sebastian recreating double descent
 25 Apr 2023 | 2:00 | Read articles about double descent and tried to recreste it with MNIST (failed)
 25 Apr 2023 | 5:00 | Kept trying to recreate double descent with sin(x)different parameters like varience and 3 layer netwrok
-26 Apr 2021 |  | Typed up the report, colleted the video presentetions and edited it with Whitney
+26 Apr 2021 | 4:30 | Typed up the report, colleted the video presentetions and edited it.
